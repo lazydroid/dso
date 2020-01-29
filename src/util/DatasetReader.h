@@ -295,6 +295,7 @@ private:
 	{
 		std::ifstream tr;
 		std::string timesFile = path.substr(0,path.find_last_of('/')) + "/times.txt";
+		std::cout << "Trying to load times.txt from " << timesFile << std::endl;
 		tr.open(timesFile.c_str());
 		while(!tr.eof() && tr.good())
 		{
