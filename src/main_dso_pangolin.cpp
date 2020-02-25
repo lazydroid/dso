@@ -51,6 +51,9 @@
 #include "IOWrapper/Pangolin/PangolinDSOViewer.h"
 #include "IOWrapper/OutputWrapper/SampleOutputWrapper.h"
 
+#include <unistd.h>
+#include <sys/types.h>
+#include <pwd.h>
 
 std::string vignette = "";
 std::string gammaCalib = "";
@@ -360,6 +363,13 @@ int main( int argc, char** argv )
 
 	// hook crtl+C.
 	boost::thread exThread = boost::thread(exitThread);
+
+	struct passwd *pw = getpwuid(getuid());
+	const std::string home_dir = pw->pw_dir;
+
+	calib = home_dir + "/dso/camera.txt";
+	gammaCalib = home_dir + "/dso/pcalib.txt";
+	vignette = home_dir + "/dso/vignette.png";
 
 	//ImageFolderReader* reader = new ImageFolderReader(source,calib, gammaCalib, vignette);
 	RealsenseCapture* reader = new RealsenseCapture(calib, gammaCalib, vignette);
