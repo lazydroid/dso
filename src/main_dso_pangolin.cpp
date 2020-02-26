@@ -21,8 +21,6 @@
 * along with DSO. If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
 #include <thread>
 #include <locale.h>
 #include <signal.h>
@@ -32,7 +30,6 @@
 
 #include "IOWrapper/Output3DWrapper.h"
 #include "IOWrapper/ImageDisplay.h"
-
 
 #include <boost/thread.hpp>
 #include "util/settings.h"
@@ -45,8 +42,6 @@
 #include "FullSystem/FullSystem.h"
 #include "OptimizationBackend/MatrixAccumulators.h"
 #include "FullSystem/PixelSelector2.h"
-
-
 
 #include "IOWrapper/Pangolin/PangolinDSOViewer.h"
 #include "IOWrapper/OutputWrapper/SampleOutputWrapper.h"
@@ -69,6 +64,7 @@ float playbackSpeed=0;	// 0 for linearize (play as fast as possible, while seque
 bool preload=false;
 bool useSampleOutput=false;
 
+bool useRealSense = true;	// use RealSense2 camera
 
 int mode=0;
 
@@ -176,6 +172,16 @@ void parseArgument(char* arg)
         {
             setting_debugout_runquiet = true;
             printf("QUIET MODE, I'll shut up!\n");
+        }
+        return;
+    }
+
+    if(1==sscanf(arg,"realsense=%d",&option))
+    {
+        if(option==1)
+        {
+            useRealSense = true;
+            printf("Using RealSense2 camera!\n");
         }
         return;
     }
@@ -367,12 +373,15 @@ int main( int argc, char** argv )
 	struct passwd *pw = getpwuid(getuid());
 	const std::string home_dir = pw->pw_dir;
 
-	calib = home_dir + "/dso/camera.txt";
-	gammaCalib = home_dir + "/dso/pcalib.txt";
-	vignette = home_dir + "/dso/vignette.png";
+	if( useRealSense ) {	// provide some sensible defaults
+		calib = home_dir + "/dso/camera.txt";
+		gammaCalib = home_dir + "/dso/pcalib.txt";
+		vignette = home_dir + "/dso/vignette.png";
+	}
 
-	//ImageFolderReader* reader = new ImageFolderReader(source,calib, gammaCalib, vignette);
-	RealsenseCapture* reader = new RealsenseCapture(calib, gammaCalib, vignette);
+	ImageSource* reader = useRealSense ?
+		static_cast<ImageSource*> (new RealsenseCapture(calib, gammaCalib, vignette)) :
+		static_cast<ImageSource*> (new ImageFolderReader(source,calib, gammaCalib, vignette));
 	reader->setGlobalCalibration();
 
 	if(setting_photometricCalibration > 0 && reader->getPhotometricGamma() == 0)
