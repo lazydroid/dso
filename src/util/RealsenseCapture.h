@@ -27,10 +27,8 @@ using namespace dso;
 class RealsenseCapture : public ImageSource
 {
 public:
-	RealsenseCapture(std::string calibFile, std::string gammaFile, std::string vignetteFile) : calibfile(calibFile)
+	RealsenseCapture(std::string calibFile, std::string gammaFile, std::string vignetteFile)
 	{
-		//this->calibfile = calibFile;
-
 		undistort = Undistort::getUndistorterForFile(calibFile, gammaFile, vignetteFile);
 
 		widthOrg = undistort->getOriginalSize()[0];
@@ -167,9 +165,6 @@ private:
 
 	int width, height;
 	int widthOrg, heightOrg;
-
-	std::string path;
-	std::string calibfile;
 
 	rs2::pipeline pipe;
 };
