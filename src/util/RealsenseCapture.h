@@ -38,7 +38,15 @@ public:
 
 		// load timestamps if possible.
 		// loadTimestamps();
-		pipe.start();
+
+		//Create a configuration for configuring the pipeline with a non default profile
+		rs2::config cfg;
+
+		//Add desired streams to configuration
+		cfg.enable_stream(RS2_STREAM_COLOR, 1280, 720, RS2_FORMAT_BGR8, 30);
+
+		//Instruct pipeline to start streaming with the requested configuration
+		pipe.start(cfg);
 	}
 
 	~RealsenseCapture()

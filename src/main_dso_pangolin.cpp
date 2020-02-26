@@ -62,7 +62,7 @@ int end=100000;
 bool prefetch = false;
 float playbackSpeed=0;	// 0 for linearize (play as fast as possible, while sequentializing tracking & mapping). otherwise, factor on timestamps.
 bool preload=false;
-bool useSampleOutput=false;
+bool useSampleOutput=true;
 
 bool useRealSense = true;	// use RealSense2 camera
 
@@ -393,7 +393,7 @@ int main( int argc, char** argv )
 	int lstart=start;
 	int lend = end;
 	int linc = 1;
-	if(reverse)
+	if(reverse & !useRealSense)	// cannot do reverse with the camera
 	{
 		printf("REVERSE!!!!");
 		lstart=end-1;
