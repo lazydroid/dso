@@ -33,6 +33,7 @@
 #include <algorithm>
 
 #include "util/Undistort.h"
+#include "util/ImageSource.h"
 #include "IOWrapper/ImageRW.h"
 
 #if HAS_ZIPLIB
@@ -99,7 +100,7 @@ struct PrepImageItem
 
 
 
-class ImageFolderReader
+class ImageFolderReader : public ImageSource
 {
 public:
 	ImageFolderReader(std::string path, std::string calibFile, std::string gammaFile, std::string vignetteFile)

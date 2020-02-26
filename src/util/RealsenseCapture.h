@@ -13,6 +13,7 @@
 #include <algorithm>
 
 #include "util/Undistort.h"
+#include "util/ImageSource.h"
 #include "IOWrapper/ImageRW.h"
 
 #include <librealsense2/rs.hpp>
@@ -23,7 +24,7 @@
 
 using namespace dso;
 
-class RealsenseCapture
+class RealsenseCapture : public ImageSource
 {
 public:
 	RealsenseCapture(std::string calibFile, std::string gammaFile, std::string vignetteFile) : calibfile(calibFile)
