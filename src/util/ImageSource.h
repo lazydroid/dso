@@ -1,5 +1,5 @@
 //
-// ImageSource class
+// ImageSource class -- an universal image source, be it a camera or a disk folder
 //
 
 #pragma once

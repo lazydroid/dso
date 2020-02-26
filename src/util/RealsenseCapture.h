@@ -74,7 +74,7 @@ public:
 
 	int getNumImages()
 	{
-		return 1000;
+		return INT_MAX;
 	}
 
 	double getTimestamp(int id)
@@ -113,20 +113,18 @@ private:
 	// Convert rs2::frame to cv::Mat
 	cv::Mat frame_to_mat(const rs2::frame& f)
 	{
-		using namespace cv;
-		using namespace rs2;
-		auto vf = f.as<video_frame>();
+		rs2::video_frame vf = f.as<rs2::video_frame>();
 		const int w = vf.get_width();
 		const int h = vf.get_height();
 		if (f.get_profile().format() == RS2_FORMAT_BGR8)
 		{
-			auto r = cv::Mat(Size(w, h), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
+			auto r = cv::Mat(cv::Size(w, h), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
 			cv::cvtColor(r, r, CV_BGR2GRAY);
 			return r;
 		}
 		else if (f.get_profile().format() == RS2_FORMAT_RGB8)
 		{
-			auto r = cv::Mat(Size(w, h), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
+			auto r = cv::Mat(cv::Size(w, h), CV_8UC3, (void*)f.get_data(), cv::Mat::AUTO_STEP);
 			cv::cvtColor(r, r, CV_RGB2GRAY);
 			return r;
 		}
