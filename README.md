@@ -1,3 +1,22 @@
+## The original README follows below, here are my changes
+
+### Added support for the RealSense2 camera
+
+Now the camera stream is used to directly build the sparse odometry data, hence, to build
+the software you have to install the realsense support libraries, follow the official
+installation process using `apt-get`. If the libraries are missing, `cmake` will complain.
+
+Please, use `realsense-viewer` to set the capture resolution for color/depth to 1280x720.
+
+### Point Cloud data saving (PCL format)
+
+Support for this was borrowed from https://github.com/Neoplanetz/dso_with_saving_pcl
+Press the `Save pointcloud` button to get your data saved. Minor improvements over the
+existing code include the automatic generation of the file name based on the current
+time stamp to avoid overwriting the data.
+
+----
+
 # DSO: Direct Sparse Odometry
 
 For more information see
@@ -95,8 +114,6 @@ Run on a dataset from [https://vision.in.tum.de/mono-dataset](https://vision.in.
 See [https://github.com/JakobEngel/dso_ros](https://github.com/JakobEngel/dso_ros) for a minimal example on
 how the library can be used from another project. It should be straight forward to implement extentions for 
 other camera drivers, to use DSO interactively without ROS.
-
-
 
 #### 3.1 Dataset Format.
 The format assumed is that of [https://vision.in.tum.de/mono-dataset](https://vision.in.tum.de/mono-dataset).
