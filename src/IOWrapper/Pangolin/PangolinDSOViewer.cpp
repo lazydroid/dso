@@ -305,7 +305,7 @@ void PangolinDSOViewer::run()
 			std::lock_guard<std::mutex> guard(point_cloud_mutex);
 
 			std::ofstream finalFile(pointcloud_filename + timestamp() + ".pcd");
-			finalFile << "# .PCD v.6 - Point Cloud Data file format\n" << std::endl;
+			finalFile << "# .PCD v.6 - Point Cloud Data file format" << std::endl;
 			finalFile << "FIELDS x y z" << std::endl;
 			finalFile << "SIZE 4 4 4" << std::endl;
 			finalFile << "TYPE F F F" << std::endl;
