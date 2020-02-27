@@ -297,62 +297,34 @@ void PangolinDSOViewer::run()
 	    	setting_fullResetRequested = true;
 	    }
 
-        // Added by Yo Han.
-        if(settings_savePCButton.Get())
-        {
-            printf("Saving [%d] Point Cloud Data....\n", numPCL);
-            settings_savePCButton.Reset();
+		if(settings_savePCButton.Get())
+		{
+			std::cout << "Saving [" << point_cloud.size() << "] Point Cloud Data...." << std::endl;
+			settings_savePCButton.Reset();
 
-            while (1)
-            {
-                if (!isWritePCL)
-                {
-                    isSavePCL = false;
-                    break;
-                }
+			std::lock_guard<std::mutex> guard(point_cloud_mutex);
 
-                boost::this_thread::sleep_for(boost::chrono::milliseconds(100));
-            }
+			std::ofstream finalFile(pointcloud_filename + timestamp() + ".pcd");
+			finalFile << "# .PCD v.6 - Point Cloud Data file format\n" << std::endl;
+			finalFile << "FIELDS x y z" << std::endl;
+			finalFile << "SIZE 4 4 4" << std::endl;
+			finalFile << "TYPE F F F" << std::endl;
+			finalFile << "COUNT 1 1 1" << std::endl;
+			finalFile << "WIDTH " << point_cloud.size() << std::endl;
+			finalFile << "HEIGHT 1" << std::endl;
+			finalFile << "#VIEWPOINT 0 0 0 1 0 0 0" << std::endl;
+			finalFile << "POINTS " << point_cloud.size() << std::endl;
+			finalFile << "DATA ascii" << std::endl;
 
+			for( Eigen::Vector3d wp : point_cloud )
+			{
+				finalFile << wp[0] << " " << wp[1] << " " << wp[2] << std::endl;
+			}
 
-            while (1)
-            {
-                if (isPCLfileClose)
-                {
-                    std::ofstream finalFile(strSaveFileName + timestamp() + ".pcd");
-                    finalFile << std::string("# .PCD v.6 - Point Cloud Data file format\n");
-                    finalFile << std::string("FIELDS x y z\n");
-                    finalFile << std::string("SIZE 4 4 4\n");
-                    finalFile << std::string("TYPE F F F\n");
-                    finalFile << std::string("COUNT 1 1 1\n");
-                    finalFile << std::string("WIDTH ") << numPCL << std::string("\n");
-                    finalFile << std::string("HEIGHT 1\n");
-                    finalFile << std::string("#VIEWPOINT 0 0 0 1 0 0 0\n");
-                    finalFile << std::string("POINTS ") << numPCL << std::string("\n");
-                    finalFile << std::string("DATA ascii\n");
+			finalFile.close();
 
-                    std::ifstream savedFile(strTmpFileName);
-
-                    while (!savedFile.eof())
-                    {                        
-                        finalFile.put(savedFile.get());                        
-                    }
-
-                    finalFile.close();
-                    savedFile.close();
-
-                    printf(("PCD File for '" + strSaveFileName + timestamp() + ".pcd" + "' is saved.\n").c_str());
-
-					unlink(strTmpFileName.c_str());	// remove temp file
-
-                    break;
-                }
-
-                boost::this_thread::sleep_for(boost::chrono::milliseconds(100));
-            }
-
-
-        }
+			std::cout << "PCD File for '" + pointcloud_filename + timestamp() + ".pcd" + "' is saved." << std::endl;
+		}
 
 		// Swap frames and Process Events
 		pangolin::FinishFrame();
@@ -393,10 +365,6 @@ void PangolinDSOViewer::reset_internal()
 	allFramePoses.clear();
 	keyframesByKFID.clear();
 	connections.clear();
-
-	isSavePCL = true;
-	isPCLfileClose = false;
-	numPCL = 0;
 
 	model3DMutex.unlock();
 

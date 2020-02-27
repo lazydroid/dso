@@ -11,9 +11,10 @@ Please, use `realsense-viewer` to set the capture resolution for color/depth to 
 ### Point Cloud data saving (PCL format)
 
 Support for this was borrowed from https://github.com/Neoplanetz/dso_with_saving_pcl
-Press the `Save pointcloud` button to get your data saved. Minor improvements over the
+Press the `Save Pointcloud` button to get your data saved. Main improvements over the
 existing code include the automatic generation of the file name based on the current
-time stamp to avoid overwriting the data.
+time stamp to avoid overwriting the data, avoiding temporary files and using mutexes
+for the proper multithreading protection.
 
 ----
 

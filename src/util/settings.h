@@ -27,8 +27,11 @@
 
 #include <string.h>
 #include <string>
+#include <vector>
+#include <mutex>
 #include <cmath>
 
+#include "util/NumType.h"
 
 namespace dso
 {
@@ -204,12 +207,9 @@ extern int staticPattern[10][40][2];
 extern int staticPatternNum[10];
 extern int staticPatternPadding[10];
 
-extern bool isSavePCL;
-extern bool isPCLfileClose;
-extern int numPCL;
-extern std::string strTmpFileName;
-extern std::string strSaveFileName;
-extern bool isWritePCL;
+extern std::vector<Eigen::Vector3d> point_cloud;
+extern std::string pointcloud_filename;
+extern std::mutex point_cloud_mutex;
 
 //#define patternNum staticPatternNum[setting_pattern]
 //#define patternP staticPattern[setting_pattern]

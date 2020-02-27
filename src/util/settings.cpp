@@ -211,12 +211,9 @@ bool setting_debugout_runquiet = false;
 
 int sparsityFactor = 5;	// not actually a setting, only some legacy stuff for coarse initializer.
 
-int numPCL = 0;
-bool isSavePCL = true;
-bool isWritePCL = false;
-bool isPCLfileClose = false;
-std::string strTmpFileName = "pcl_data_tmp.pcd";
-std::string strSaveFileName = "dso_data_";
+std::string pointcloud_filename = "dso_data_";
+std::vector<Eigen::Vector3d> point_cloud;
+std::mutex point_cloud_mutex;
 
 void handleKey(char k)
 {

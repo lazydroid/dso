@@ -48,22 +48,11 @@ class SampleOutputWrapper : public Output3DWrapper
 public:
         inline SampleOutputWrapper()
         {
-            numPCL = 0;
-            isSavePCL = true;
-            isPCLfileClose = false;            
-
-            pclFile.open(strTmpFileName);
-
             printf("OUT: Created SampleOutputWrapper\n");
         }
 
         virtual ~SampleOutputWrapper()
         {
-            if (pclFile.is_open())
-            {
-                pclFile.close();
-            }
-
             printf("OUT: Destroyed SampleOutputWrapper\n");
         }
 
@@ -103,6 +92,8 @@ public:
 
             if (final)
             {
+                std::lock_guard<std::mutex> guard(point_cloud_mutex);
+
                 for (FrameHessian* f : frames)
                 {
                     if (f->shell->poseValid)
@@ -122,36 +113,14 @@ public:
                             Eigen::Vector4d camPoint(x, y, z, 1.f);
                             Eigen::Vector3d worldPoint = m * camPoint;
 
-                            if (isSavePCL && pclFile.is_open())
-                            {
-                                isWritePCL = true;
+                            point_cloud.push_back( worldPoint );
 
-                                pclFile << worldPoint[0] << " " << worldPoint[1] << " " << worldPoint[2] << "\n";
-
-                                printf("[%d] Point Cloud Coordinate> X: %.2f, Y: %.2f, Z: %.2f\n",
-                                         numPCL,
+                            printf("[%ld] Point Cloud Coordinate> X: %.2f, Y: %.2f, Z: %.2f\n",
+                                         point_cloud.size(),
                                          worldPoint[0],
                                          worldPoint[1],
                                          worldPoint[2]);
-
-                                numPCL++;
-                                isWritePCL = false;
-                            }
-                            else
-                            {
-                                if (!isPCLfileClose)
-                                {
-                                    if (pclFile.is_open())
-                                    {
-                                        pclFile.flush();
-                                        pclFile.close();
-                                        isPCLfileClose = true;
-                                    }
-                                }
-                            }
-
-
-                         }
+                        }
                     }
                 }
             }
